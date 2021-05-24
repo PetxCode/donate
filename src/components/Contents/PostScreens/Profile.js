@@ -2,9 +2,11 @@ import { Button, Input } from 'antd'
 import React from 'react'
 import { useEffect } from 'react'
 import { useState } from 'react'
+import { useHistory } from 'react-router'
 import { app } from '../../../base'
 
 const Profile = () => {
+  const hist = useHistory()
   const [name, setName] = useState("")
   const [bio, setBio] = useState("")
   const [avatar, setAvatar] = useState(null)
@@ -15,13 +17,13 @@ const Profile = () => {
    setToggle(!toggle)
  }
 
-  const uploadImage = async(e) =>{
-     const file = e.target.files[0]
-     const storeRef =await app.storage().ref()
-     const fileRef =await  storeRef.child(file.name)
-     await fileRef.put(file)
-     setAvatar(await fileRef.getDownloadURL())
-  }
+ const uploadImage = async(e) => {
+  const file = e.target.files[0]
+  const storageRef = app.storage().ref()
+  const fileRef = storageRef.child(file.name)
+  await fileRef.put(file)
+  setAvatar(await fileRef.getDownloadURL())
+}
 
   const finalUpdate = async() => {
 
@@ -34,6 +36,7 @@ const Profile = () => {
     first: name.charAt(0),
     avatar
   })
+  hist.push('/')
     }  
   }
 
@@ -190,9 +193,9 @@ style={{
         placeholder="Enter your Name"
         type="file"
         
-        onChange={()=>{
-          uploadImage()
-        }}
+        onChange={
+          uploadImage
+        }
       />
       <Input
       style={{
