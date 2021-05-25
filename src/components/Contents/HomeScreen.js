@@ -31,19 +31,17 @@ const HomeScreen = () => {
       marginTop:"50px"
     }}
     >
-      <div
-      style={{
-        width:"300px",
-        height:"500px",
-        borderRadius:"10px",
-      }}
-      >
-        <div>
+   
+        
          {
            post.map(({coverImage, amount, brife, createdBy, id, detail, title, createdAt})=>(
              <div key={id} 
              style={{
-               
+              width:"300px",
+              height:"500px",
+              borderRadius:"10px",
+              margin:"10px",
+              // backgroundColor:"red"
              }}
              > 
              <WhoPosted
@@ -104,8 +102,8 @@ const HomeScreen = () => {
          }
         </div>
         
-      </div>
-    </div>
+    
+   
   )
 }
 

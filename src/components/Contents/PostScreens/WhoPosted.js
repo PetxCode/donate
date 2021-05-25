@@ -35,9 +35,13 @@ const WhoPosted = ({id, createdBy, createdAt}) => {
             width:"50px",
             height:"50px",
             borderRadius:"25px",
+            border:"2px solid purple",
+            backgroundColor:"tomato",
+            fontWeight:"bold",
             justifyContent:"center",
             alignItems:"center",
-            border:"2px solid purple",
+            display:"flex",
+            textTransform: "uppercase"
           }}
            >{post && post.first}</div>
          ):(

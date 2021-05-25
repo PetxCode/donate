@@ -3,6 +3,10 @@ import React,{useState, useEffect} from 'react'
 import { useParams } from 'react-router'
 import { app } from '../../../base'
 import { usePaystackPayment } from 'react-paystack';
+import firebase from 'firebase'
+import moment from "moment"
+import WhoPosted from './WhoPosted';
+import WhoCommented from './WhoCommented';
 
 
 
@@ -85,17 +89,42 @@ const config = {
 const PostDetail = () => {
   const {id} = useParams()
   const [post, setPost] = useState([])
+  const[comment, setComment] = useState('')
+  const [viewComment, setViewComment] =useState([])
   
+  const makeComment = async() => {
+  const newUser = app.auth().currentUser
+  if(newUser){
+    await app.firestore().collection("post").doc(id).collection("comments").doc().set({
+      comment,
+      createdBy: newUser.uid,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    })
+    setComment("")
+  }
+  }
   
+const viewComments = async() => {
+  await app.firestore().collection("post").doc(id).collection("comments").onSnapshot(snapshot => {
+    const r = []
+    snapshot.forEach(doc => {
+      r.push({...doc.data(), id: doc.id})
+    })
+    setViewComment(r)
+  })
+}
+
     const viewPost = async() => {
       await app.firestore().collection("post").doc(id).get()
       .then((user)=>(
         setPost(user.data())
       ))
+      
     }
   
     useEffect(()=>{
       viewPost()
+      viewComments()
     }, [])
   
   
@@ -164,13 +193,84 @@ const PostDetail = () => {
 <br/>
 <br/>
 <MakePayment />
+<div
+style={{
+  marginTop:"20px",
+  marginBottom:"100px",
+
+}}
+>
+  <div
+  style={{
+    marginBottom:"10px",
+    display:"flex",
+    justifyContent:"center",
+    fontWeight:"bold",
+    textTransform:"uppercase"
+  }}
+  >Add Feedback or Comment</div>
+  <Input
+    placeholder="Place a comment"
+    value={comment}
+    onChange={(e)=>{
+      setComment(e.target.value)
+    }}
+  />
+ <div
+  style={{
+    display:"flex",
+    // width:"100%",
+    flexDirection:"row-reverse",
+    marginTop:"10px"
+  }}
+ >
+ <Button
+  type="primary"
+ onClick={makeComment}
+  >Add Comment</Button>
+</div>
+
+<div
+ style={{
+   
+    marginTop:"15px"
+  }}
+>
+  {
+    viewComment.map(({createdAt, createdBy, comment, id})=>(
+      <div key={id}
+      style={{
+        display:"flex"
+      }}
+      > 
+      <WhoCommented id={id} createdBy={createdBy} />
+       <div
+       style={{
+         display:"flex",
+         flexDirection:"column",
+        //  alignItems:"center",
+        justifyContent:"center",
+        marginLeft:"20px"
+       }}
+       >
+       <div> {comment} </div>
+        <div
+        style={{
+          fontWeight:"bold",
+          fontSize:"12px"
+        }}
+        > {moment(createdAt.toDate()).fromNow()} </div>
+         </div>
+        
+       </div>
+    ))
+  }
+</div>
+ </div>
       </div>
-     
      <div>
-      
-     </div>
-    
-    </div>
+   </div>
+  </div>
   )
 }
 

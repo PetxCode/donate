@@ -102,7 +102,7 @@ style={{
     >
      <div>
      {
-       holder.avatar !== "" ? (
+       !holder.avatar ? (
          <img
           src={holder && holder.avatar}
           alt={holder && holder.name}
@@ -113,7 +113,7 @@ style={{
            borderRadius:"40px",
            justifyContent:"center",
            alignItems:"center",
-           backgroundColor: "red",
+           backgroundColor: "pink",
            border: "2px solid white",
            objectFit:"cover"
           }}
@@ -127,7 +127,7 @@ style={{
            borderRadius:"40px",
            justifyContent:"center",
            alignItems:"center",
-           backgroundColor: "red",
+           backgroundColor: "tomato",
            border: "2px solid white",
            fontWeight:"bold",
            fontSize:"20px"
